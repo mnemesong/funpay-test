@@ -17,12 +17,15 @@ class TokenizationResult
 
     private string $pattern;
 
+    private string $primalStr;
+
     /**
      * @param string $str
      * @param string $pattern
      */
     public function __construct(string $str, string $pattern)
     {
+        $this->primalStr = $str;
         $this->pattern = $pattern;
         $matches = [];
         preg_match_all(
@@ -38,7 +41,10 @@ class TokenizationResult
                 array_map(fn(array $v) => $v[0], $result)
             );
         }
-        $this->strParts = preg_split($pattern, $str);
+        $pregSplit = preg_split($pattern, $str);
+        Asserter::assertOk($pregSplit !== false, "Invalid preg_split "
+            . "'${str}' by pattern ${pattern}" );
+        $this->strParts = $pregSplit;
     }
 
     /**
@@ -63,6 +69,14 @@ class TokenizationResult
     public function getPattern(): string
     {
         return $this->pattern;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrimalStr(): string
+    {
+        return $this->primalStr;
     }
 
 }

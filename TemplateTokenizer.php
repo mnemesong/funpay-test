@@ -4,8 +4,10 @@ namespace FpDbTest;
 /**
  * Токенизирует специальые идентификаторы, форматирует и вставляет значения
  */
-class TemplateTokenizer
+class TemplateTokenizer implements TokenizerInterface
 {
+    const VALUES_TOKEN_PATTERN = '/\?[dfa\#]?/';
+
     private DbFormatterInterface $dbFormatter;
 
     /**
@@ -24,16 +26,16 @@ class TemplateTokenizer
      */
     public function formatAndInjectValues(string $query, array $vals): string
     {
-        $result = new TokenizationResult($query, '/\?[dfa\#]?/');
-        $tokens = $result->getTokens();
+        $result = new TokenizationResult($query, self::VALUES_TOKEN_PATTERN);
+        $tokens = array_values($result->getTokens());
         $strParts = $result->getStrParts();
-        Asserter::assertCount($vals, $tokens);
-        $resultParts = [];
-        foreach (array_values($tokens) as $i => $t) {
-            $resultParts[] = $strParts[$i];
-            $resultParts[] = self::formatValue($vals[$i], $t);
-        }
-        $resultParts[] = end($strParts);
+        Asserter::assertCountEq($vals, $tokens);
+        $formattedTokens = array_map(
+            fn(/* [strToken, mixVal] */ $v) =>
+                self::formatValue($v[1], $v[0]),
+            ArrayHelper::zip($tokens, $vals)
+        );
+        $resultParts = ArrayHelper::mix($strParts, $formattedTokens);
         return implode("", $resultParts);
     }
 
@@ -91,4 +93,15 @@ class TemplateTokenizer
         return array_keys($arr) === range(0, $cnt - 1);
     }
 
+    /**
+     * @param TokenizationRequest $request
+     * @return TokenizationRequest[]
+     * @throws \Exception
+     */
+    public function tokenize(TokenizationRequest $request): array
+    {
+        $resultStr = $this
+            ->formatAndInjectValues($request->getQuery(), $request->getVals());
+        return [new TokenizationRequest($resultStr, [])];
+    }
 }

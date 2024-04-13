@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
-use FpDbTest\TokenizationResultTest;
-
-TokenizationResultTest::runAll();
+\FpDbTest\QuotesTokenizerTest::runAll();
 
 exit('OK');
