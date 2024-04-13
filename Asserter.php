@@ -28,7 +28,7 @@ final class Asserter
     {
         self::assertIsOptionScalar($val1);
         self::assertIsOptionScalar($val2);
-        if(!is_scalar($val1)) {
+        if($val1 !== $val2) {
             $printed1 = print_r($val1, true);
             $printed2 = print_r($val2, true);
             throw new \Error(
@@ -97,11 +97,32 @@ final class Asserter
      * @param $val
      * @return void
      */
-    public static function assertArrayOfOptionScalars($val): void
+    public static function assertIsString($val): void
+    {
+        self::assertOk(strval($val) === $val, "should be string");
+    }
+
+    /**
+     * @param $val
+     * @return void
+     */
+    public static function assertIsArrayOfOptionScalars($val): void
     {
         self::assertOk(is_array($val), "should be array");
         foreach ($val as $v) {
             self::assertIsOptionScalar($v);
+        }
+    }
+
+    /**
+     * @param $val
+     * @return void
+     */
+    public static function assertIsArrayOfStrings($val): void
+    {
+        self::assertOk(is_array($val), "should be array");
+        foreach ($val as $v) {
+            self::assertIsString($v);
         }
     }
 }
