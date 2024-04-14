@@ -38,35 +38,6 @@ final class Asserter
 
     /**
      * @param array $val1
-     * @param array $val2
-     * @return void
-     */
-    public static function assertArrEq(
-        array $val1,
-        array $val2
-    ): void {
-        $keys1 = array_keys($val1);
-        $keys2 = array_keys($val2);
-        $throwNewErr = function ($val1, $val2) {
-            $print1 = print_r($val1, true);
-            $print2 = print_r($val2, true);
-            throw new \Error("${print1} and ${print2} are not equal");
-        };
-        if(count($keys2) !== count($keys1)) {
-            $throwNewErr($val1, $val2);
-        }
-        foreach ($keys1 as $k) {
-            if(!in_array($k, $keys2, true)) {
-                $throwNewErr($val1, $val2);
-            }
-            if($val1[$k] !== $val2[$k]) {
-                $throwNewErr($val1, $val2);
-            }
-        }
-    }
-
-    /**
-     * @param array $val1
      * @param int $nominalCnt
      * @return void
      */
@@ -152,16 +123,35 @@ final class Asserter
     ): void {
         Asserter::assertIsArrayOfOptionScalars($arr1);
         Asserter::assertIsArrayOfOptionScalars($arr2);
-        $printErr = function ($arr1, $arr2) {
-            return "Arrays are not equal:\n"
-                . print_r($arr1, true) . " !== "
-                . print_r($arr2, true);
-        };
         Asserter::assertCountEq($arr1, $arr2);
         $arr2Keys = array_keys($arr2);
         foreach (array_keys($arr1) as $k) {
-            Asserter::assertOk(in_array($k, $arr2Keys), $printErr($arr1, $arr2));
-            Asserter::assertOk($arr1[$k] === $arr2[$k], $printErr($arr1, $arr2));
+            if(!in_array($k, $arr2Keys) || ($arr1[$k] !== $arr2[$k])) {
+                throw new \Error("Arrays are not equal:\n"
+                    . print_r($arr1, true) . " !== "
+                    . print_r($arr2, true));
+            }
+        }
+    }
+
+    /**
+     * @param array $array
+     * @param callable $f
+     * @param string $desc
+     * @return void
+     */
+    public static function assertEvery(
+        array $array,
+        callable $f,
+        string $desc = "match condition"
+    ): void {
+        foreach ($array as $v) {
+            if(!$f($v)) {
+                $arrPrint = print_r($array, true);
+                $vPrint = print_r($v, true);
+                throw new \Error("Element element${vPrint} is not "
+                    . "${desc} in ${arrPrint}");
+            }
         }
     }
 }
