@@ -3,7 +3,7 @@ namespace FpDbTest;
 
 class StringHelperTest
 {
-    public static function testTokenize()
+    public static function testTokenize1()
     {
         $givenPattern = '/\?[dfa\#]?/';
         $givenQuery = 'SELECT ?# FROM users WHERE user_id = ?d AND block = ??';
@@ -17,6 +17,23 @@ class StringHelperTest
             '?',
             '',
             '?',
+            ''
+        ]);
+    }
+
+    public static function testTokenize2()
+    {
+        $givenPattern = "/" . implode("|",array_map(
+                fn($ch) => "(${ch}(?:(?:[^${ch}])|(?:\\\\${ch}))*[^\\\\]${ch})",
+                ['"', "'", "`"]
+            )) . "/";;
+        $givenQuery = 'SELECT ?# FROM `users` WHERE user_id = ?d AND block = "data"';
+        $result = StringHelper::tokenize($givenQuery, $givenPattern);
+        Asserter::assertArraysOfOptionScalarEquals($result, [
+            'SELECT ?# FROM ',
+            '`users`',
+            ' WHERE user_id = ?d AND block = ',
+            '"data"',
             ''
         ]);
     }
@@ -41,7 +58,8 @@ class StringHelperTest
 
     public static function runAll()
     {
-        self::testTokenize();
+        self::testTokenize1();
+        self::testTokenize2();
         self::testResplit();
     }
 }

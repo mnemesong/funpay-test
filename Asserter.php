@@ -106,8 +106,11 @@ final class Asserter
      */
     public static function assertIsArrayOfStrings($val): void
     {
+        $printedArr = print_r($val, true);
         self::assertOk(is_array($val), "should be array");
         foreach ($val as $v) {
+            Asserter::assertOk(strval($v) === $v,
+                "'${v}' should be string in ${printedArr}");
             self::assertIsString($v);
         }
     }
@@ -152,6 +155,24 @@ final class Asserter
                 throw new \Error("Element element${vPrint} is not "
                     . "${desc} in ${arrPrint}");
             }
+        }
+    }
+
+    /**
+     * @param string $s
+     * @param array $substr
+     * @return void
+     */
+    public static function assertStringNotContainsSubstrings(
+        string $s,
+        array $substr
+    ): void {
+        if(mb_strlen($s) === 0) {
+            return;
+        }
+        foreach ($substr as $ss) {
+            Asserter::assertOk(mb_stripos($s, $ss) === false,
+                "String '${s}' should not contains substring '${ss}'");
         }
     }
 }

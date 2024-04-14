@@ -1,8 +1,16 @@
 <?php
 namespace FpDbTest;
 
+/**
+ * Вспомогательный класс для работы со строками
+ */
 class StringHelper
 {
+    /**
+     * @param string $str
+     * @param string $pattern
+     * @return array|string[]
+     */
     public static function tokenize(string $str, string $pattern): array
     {
         $matches = [];
@@ -15,13 +23,16 @@ class StringHelper
         uasort(
             $matches[0],
             fn($a, $b) => ($a[1] === $b[1])
-                ? (strlen($a[0]) - strlen($b[0]))
+                ? (mb_strlen($a[0]) - mb_strlen($b[0]))
                 : $a[1] - $b[1]
         );
+        if(empty($matches[0])) {
+            return [$str];
+        }
         $uniqIntervals = array_reduce(
             $matches[0],
             function ($acc, $el) use ($matches) {
-                $newEl = [$el[1], $el[1] + strlen($el[0])];
+                $newEl = [$el[1], $el[1] + mb_strlen($el[0])];
                 if(empty($acc)) {
                     return [$newEl];
                 }
@@ -61,6 +72,7 @@ class StringHelper
         }
         $result[] = implode("",
             array_slice($exploded, end($splitPoints)));
+        Asserter::assertIsArrayOfStrings($result);
         return $result;
     }
 
@@ -75,6 +87,7 @@ class StringHelper
         string $delim,
         callable $process
     ): array {
+        Asserter::assertIsArrayOfStrings($strs);
         $splitted = array_map(
             fn($s) => explode($delim, $s),
             $strs
