@@ -51,4 +51,54 @@ class ArrayHelper
         }
         return $result;
     }
+
+    /**
+     * @param array $array
+     * @return array
+     */
+    public static function filterEven(array $array): array
+    {
+        return array_filter(
+            array_values($array),
+            fn($k) => ($k % 2) === 0, ARRAY_FILTER_USE_KEY
+        );
+    }
+
+    /**
+     * @param array $array
+     * @return array
+     */
+    public static function filterNotEven(array $array): array
+    {
+        return array_filter(
+            array_values($array),
+            fn($k) => ($k % 2) !== 0, ARRAY_FILTER_USE_KEY
+        );
+    }
+
+    /**
+     * @param array $array - A[]
+     * @param callable $f - convertion function :: A -> int -> B
+     * @return array - B[]
+     */
+    public static function mapi(array $array, callable $f): array
+    {
+        $result = [];
+        foreach ($array as $k => $v) {
+            $result[$k] = $f($v, $k);
+        }
+        return $result;
+    }
+
+    public static function rest(array $arr): array
+    {
+        $firstI = array_key_first($arr);
+        $result = [];
+        foreach ($arr as $i => $k) {
+            if($i !== $firstI) {
+                $result[$i] = $k;
+            }
+        }
+        return $result;
+    }
 }

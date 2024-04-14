@@ -3,7 +3,7 @@ namespace FpDbTest;
 
 class StringHelperTest
 {
-    public static function test1()
+    public static function testTokenize()
     {
         $givenPattern = '/\?[dfa\#]?/';
         $givenQuery = 'SELECT ?# FROM users WHERE user_id = ?d AND block = ??';
@@ -21,8 +21,27 @@ class StringHelperTest
         ]);
     }
 
+    public static function testResplit()
+    {
+        $givenStrParts = ["ce1c", "c412 ?: 4c12", "4c21?:412c421", ""];
+        $result = StringHelper::resplit(
+            $givenStrParts,
+            "?:",
+            function ($newParts) {
+                Asserter::assertArraysOfOptionScalarEquals($newParts, [
+                     "ce1c", "c412 ", " 4c12", "4c21", "412c421", ""
+                ]);
+                return ["1", "2", "3", "4", "5", "6"];
+            }
+        );
+        Asserter::assertArraysOfOptionScalarEquals($result, [
+            "1", "2?:3", "4?:5", "6"
+        ]);
+    }
+
     public static function runAll()
     {
-        self::test1();
+        self::testTokenize();
+        self::testResplit();
     }
 }

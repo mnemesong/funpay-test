@@ -13,9 +13,9 @@ class StringHelper
             PREG_OFFSET_CAPTURE
         );
         uasort(
-            $matches,
+            $matches[0],
             fn($a, $b) => ($a[1] === $b[1])
-                ? (strlen($a[0] - strlen($b[0])))
+                ? (strlen($a[0]) - strlen($b[0]))
                 : $a[1] - $b[1]
         );
         $uniqIntervals = array_reduce(
@@ -62,5 +62,66 @@ class StringHelper
         $result[] = implode("",
             array_slice($exploded, end($splitPoints)));
         return $result;
+    }
+
+    /**
+     * @param string[] $strs - array count of N
+     * @param string $delim
+     * @param callable $process - process function (array count of M) -> (array count of M)
+     * @return string[] - array count of N
+     */
+    public static function resplit(
+        array $strs,
+        string $delim,
+        callable $process
+    ): array {
+        $splitted = array_map(
+            fn($s) => explode($delim, $s),
+            $strs
+        ); //string[][]
+        $hashSkip = new CustomHash(20);
+        $hashDelim = new CustomHash(20);
+        $delimeters = array_values(ArrayHelper::rest(array_reduce(
+            $splitted,
+            fn($acc, $el) => array_merge(
+                $acc,
+                [$hashSkip->getHash()],
+                array_fill(0, count($el) - 1, $hashDelim->getHash()),
+            ),
+            []
+        )));
+        $parts = array_reduce(
+            $splitted,
+            fn($acc, $el) => array_merge($acc, $el),
+            []
+        );
+        $processedParts = $process($parts);
+        Asserter::assertCountEq($parts, $processedParts);
+        return array_reduce(
+            ArrayHelper::mix($processedParts, $delimeters),
+            function($acc, $el) use ($hashSkip, $hashDelim, $delim) {
+                if(empty($acc)) {
+                    return [$el];
+                }
+                if($el === $hashSkip->getHash()) {
+                    return array_merge($acc, [""]);
+                }
+                if($el === $hashDelim->getHash()) {
+                    return ArrayHelper::mapi(
+                        $acc,
+                        fn($v, $i) => ($i === array_key_last($acc))
+                            ? ($v . $delim)
+                            : $v
+                    );
+                }
+                return ArrayHelper::mapi(
+                    $acc,
+                    fn($v, $i) => ($i === array_key_last($acc))
+                            ? ($v . $el)
+                            : $v
+                );
+            },
+            []
+        );
     }
 }
