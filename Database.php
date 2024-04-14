@@ -14,7 +14,7 @@ class Database implements DatabaseInterface
     public function __construct(mysqli $mysqli)
     {
         $this->mysqli = $mysqli;
-        $this->skipHash = new CustomHash();
+        $this->skipHash = new CustomHash(20);
     }
 
     public function buildQuery(string $query, array $args = []): string

@@ -6,15 +6,19 @@ namespace FpDbTest;
  */
 class CustomHash
 {
-    private string $hash = 'c412*-L';
+    private string $hash = '';
 
-    public function __construct()
+    public function __construct(int $len, string $excludeChars = "")
     {
-        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
-            .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            .'0123456789!@#$%^&*()');
+        $excludeSplit = str_split($excludeChars);
+        $seed = array_filter(
+            str_split('abcdefghijklmnopqrstuvwxyz'
+                .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                .'0123456789!@#$%^&*()?№:^;'),
+            fn($ch) => !in_array($ch, $excludeSplit)
+        );
         shuffle($seed);
-        foreach (array_rand($seed, 22) as $k) {
+        foreach (array_rand($seed, $len) as $k) {
             $this->hash .= $seed[$k];
         }
     }
