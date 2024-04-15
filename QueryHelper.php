@@ -66,15 +66,9 @@ class QueryHelper
             $hash->getHash(),
             fn($parts) => $f($parts)
         );
-        $processedBracketlessConds = ArrayHelper::filterNotEven($processed);
-        $processedConditionless = ArrayHelper::filterEven($processed);
-        $processedConds = array_map(
-            fn($s) => "{" . $s . "}",
-            $processedBracketlessConds
-        );
         $result = explode(
             $hash->getHash(),
-            implode("", ArrayHelper::mix($processedConditionless, $processedConds))
+            implode("", $processed)
         );
         AssertHelper::assertCountEq($qs, $result);
         return $result;

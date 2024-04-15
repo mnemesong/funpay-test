@@ -19,7 +19,6 @@ class Database implements DatabaseInterface
 
     public function buildQuery(string $query, array $args = []): string
     {
-        echo "Building query: " . $query . "\n";
         return $this->queryProcessor->processQuery($query, $args);
     }
 

@@ -25,7 +25,7 @@ class MysqlDbFormatter implements DbFormatterInterface
     public function formatOptionScalarVal($val): string
     {
         if($val === strval($val)) {
-            return '"' . $this->mysqli->real_escape_string($val) . '"';
+            return "'" . $this->mysqli->real_escape_string($val) . "'";
         }
         if(is_numeric($val)) {
             return strval($val);
@@ -69,12 +69,12 @@ class MysqlDbFormatter implements DbFormatterInterface
      * @param scalar[]|null[] $val
      * @return string
      */
-    public function formatAssociativeArrayOfVals(array $val): string
+    public function formatAssociativeArray(array $val): string
     {
         $result = [];
         foreach ($val as $i => $v) {
-            $result[] = "(" . $this->formatOptionScalarVal($i)
-                . ", " . $this->formatOptionScalarVal($v) . ")";
+            $result[] =  $this->formatFieldName($i)
+                . " = " . $this->formatOptionScalarVal($v);
         }
         return implode(", ", $result);
     }
@@ -91,17 +91,4 @@ class MysqlDbFormatter implements DbFormatterInterface
         ));
     }
 
-    /**
-     * @param string[] $val
-     * @return string
-     */
-    public function formatAssociativeArrayOfFields(array $val): string
-    {
-        $result = [];
-        foreach ($val as $i => $v) {
-            $result[] = "(" . $this->formatFieldName($i)
-                . ", " . $this->formatFieldName($v) . ")";
-        }
-        return implode(", ", $result);
-    }
 }

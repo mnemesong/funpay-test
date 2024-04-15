@@ -119,14 +119,14 @@ class QueryProcessor
                 if(self::checkIsList($val)) {
                     return $this->dbFormatter->formatListOfVals($val);
                 }
-                return $this->dbFormatter->formatAssociativeArrayOfVals($val);
+                return $this->dbFormatter->formatAssociativeArray($val);
             case "?#":
                 if(is_array($val)) {
                     AssertHelper::assertIsArrayOfStrings($val);
                     if(self::checkIsList($val)) {
                         return $this->dbFormatter->formatListOfFields($val);
                     }
-                    return $this->dbFormatter->formatAssociativeArrayOfFields($val);
+                    return $this->dbFormatter->formatAssociativeArray($val);
                 }
                 AssertHelper::assertIsString($val);
                 return $this->dbFormatter->formatFieldName($val);

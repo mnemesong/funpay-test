@@ -37,7 +37,7 @@ class QueryHelperTest
         );
         AssertHelper::assertArraysOfOptionScalarEquals($result, [
             '!SELECT ?# FROM `users` ',
-            '!WHERE user_id = ?d {! AND block = "dsaa" }!'
+            '!WHERE user_id = ?d ! AND block = "dsaa" !'
         ]);
     }
 

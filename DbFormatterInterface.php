@@ -28,7 +28,7 @@ interface DbFormatterInterface
      * @param scalar[]|null[] $val
      * @return string
      */
-    public function formatAssociativeArrayOfVals(array $val): string;
+    public function formatAssociativeArray(array $val): string;
 
     /**
      * @param string[] $val
@@ -36,9 +36,4 @@ interface DbFormatterInterface
      */
     public function formatListOfFields(array $val): string;
 
-    /**
-     * @param string[] $val
-     * @return string
-     */
-    public function formatAssociativeArrayOfFields(array $val): string;
 }
