@@ -14,7 +14,7 @@ class CustomHash
         $seed = array_filter(
             mb_str_split('abcdefghijklmnopqrstuvwxyz'
                 .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                .'0123456789!@#$%^&*()?№:^;'),
+                .'0123456789!@#$%^&*()?:^;'),
             fn($ch) => !in_array(mb_strtolower($ch), $excludeSplit)
                 && !in_array(mb_strtoupper($ch), $excludeSplit)
         );

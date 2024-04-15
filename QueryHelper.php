@@ -35,10 +35,13 @@ class QueryHelper
                 fn($ch) => "(${ch}(?:(?:[^${ch}])|(?:\\\\${ch}))*[^\\\\]${ch})",
                 ['"', "'", "`"]
             )) . "/";
-        $hash = new CustomHash(20, "?'\"");
+        $hash = new CustomHash(20, "?'`" . '"');
         $q = implode($hash->getHash(), $qs);
         $splittedByTokens = StringHelper::tokenize($q, $quotesPattern);
+        Asserter::assertIsArrayOfStrings($splittedByTokens);
         $notQuotted = array_values(ArrayHelper::filterEven($splittedByTokens));
+        Asserter::assertStringNotContainsSubstrings(
+            implode("", $notQuotted), ["'", '"', '`']);
         $quotted = array_values(ArrayHelper::filterNotEven($splittedByTokens));
         $processedNotQuotted = StringHelper::resplit(
             $notQuotted,
@@ -46,13 +49,52 @@ class QueryHelper
             fn($parts) => $f($parts)
         );
         $processedMixed = ArrayHelper::mix($processedNotQuotted, $quotted);
-        return explode($hash->getHash(), implode("", $processedMixed));
+        $result = explode($hash->getHash(), implode("", $processedMixed));
+        Asserter::assertCountEq($qs, $result);
+        return $result;
     }
 
-    public static function processCondition(string $q, callable $f): string
+    /**
+     * @param string[] $qs
+     * @param callable $f
+     * @return string[]
+     */
+    public static function processCondition(array $qs, callable $f): array
     {
-        $pattern = "/[\\{(?:(?:[^\\}])|(?:[^\\{]))*\'}]/";
-        $tokenized = StringHelper::tokenize($q, $pattern);
-
+        $pattern = "/\\{(?:[^\\}\\{])*\\}/";
+        $hash = new CustomHash(20, "?{}");
+        $q = implode($hash->getHash(), $qs);
+        $withConditionsExcluded = StringHelper::tokenize($q, $pattern);
+        $conditionLess = array_values(
+            ArrayHelper::filterEven($withConditionsExcluded));
+        $conditions = array_values(
+            ArrayHelper::filterNotEven($withConditionsExcluded));
+        Asserter::assertStringNotContainsSubstrings(
+            implode("", $conditionLess), ["{", '}']);
+        $conditionsWithoutBrackets = array_map(
+            fn($c) => implode("", array_filter(
+                mb_str_split($c),
+                fn($i) => (($i !== 0) && ($i !== (mb_strlen($c) - 1))),
+                ARRAY_FILTER_USE_KEY
+            )),
+            $conditions
+        );
+        $processed = StringHelper::resplit(
+            ArrayHelper::mix($conditionLess, $conditionsWithoutBrackets),
+            $hash->getHash(),
+            fn($parts) => $f($parts)
+        );
+        $processedBracketlessConds = ArrayHelper::filterNotEven($processed);
+        $processedConditionless = ArrayHelper::filterEven($processed);
+        $processedConds = array_map(
+            fn($s) => "{" . $s . "}",
+            $processedBracketlessConds
+        );
+        $result = explode(
+            $hash->getHash(),
+            implode("", ArrayHelper::mix($processedConditionless, $processedConds))
+        );
+        Asserter::assertCountEq($qs, $result);
+        return $result;
     }
 }
