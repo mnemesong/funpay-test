@@ -9,7 +9,7 @@ class CustomHashTest
         for ($i = 0; $i < 1000; $i++) {
             $hashVal = (new CustomHash(mt_rand(5, 20), $forbStr))->getHash();
             foreach ($forbiddenChars as $fch) {
-                Asserter::assertOk(mb_stripos($hashVal, $fch) === false,
+                AssertHelper::assertOk(mb_stripos($hashVal, $fch) === false,
                     "Hash '${hashVal}' should not contains char '${fch}'");
             }
         }

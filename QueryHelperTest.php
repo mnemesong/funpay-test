@@ -16,7 +16,7 @@ class QueryHelperTest
             $givenQuery,
             fn($strParts) => array_map(fn($p) => "!" . $p, $strParts)
         );
-        Asserter::assertArraysOfOptionScalarEquals( $result, [
+        AssertHelper::assertArraysOfOptionScalarEquals( $result, [
             '!SELECT ?# FROM `users`! ',
             '!WHERE user_id = ?d AND block = "dsaa"!'
         ]);
@@ -35,7 +35,7 @@ class QueryHelperTest
             $givenQuery,
             fn($strParts) => array_map(fn($p) => "!" . $p, $strParts)
         );
-        Asserter::assertArraysOfOptionScalarEquals($result, [
+        AssertHelper::assertArraysOfOptionScalarEquals($result, [
             '!SELECT ?# FROM `users` ',
             '!WHERE user_id = ?d {! AND block = "dsaa" }!'
         ]);
@@ -57,7 +57,7 @@ class QueryHelperTest
                 , $strParts
             )
         );
-        Asserter::assertArraysOfOptionScalarEquals($result, [
+        AssertHelper::assertArraysOfOptionScalarEquals($result, [
             'SELECT ! FROM `users` ',
             'WHERE user_id = ! { AND block = "dsaa" }'
         ]);

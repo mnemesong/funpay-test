@@ -4,7 +4,7 @@ namespace FpDbTest;
 /**
  * Вспомогательный класс для проверки утверждений на тестах
  */
-final class Asserter
+final class AssertHelper
 {
     /**
      * @param mixed $val
@@ -109,7 +109,7 @@ final class Asserter
         $printedArr = print_r($val, true);
         self::assertOk(is_array($val), "should be array");
         foreach ($val as $v) {
-            Asserter::assertOk(strval($v) === $v,
+            AssertHelper::assertOk(strval($v) === $v,
                 "'${v}' should be string in ${printedArr}");
             self::assertIsString($v);
         }
@@ -124,9 +124,9 @@ final class Asserter
         array $arr1,
         array $arr2
     ): void {
-        Asserter::assertIsArrayOfOptionScalars($arr1);
-        Asserter::assertIsArrayOfOptionScalars($arr2);
-        Asserter::assertCountEq($arr1, $arr2);
+        AssertHelper::assertIsArrayOfOptionScalars($arr1);
+        AssertHelper::assertIsArrayOfOptionScalars($arr2);
+        AssertHelper::assertCountEq($arr1, $arr2);
         $arr2Keys = array_keys($arr2);
         foreach (array_keys($arr1) as $k) {
             if(!in_array($k, $arr2Keys) || ($arr1[$k] !== $arr2[$k])) {
@@ -171,7 +171,7 @@ final class Asserter
             return;
         }
         foreach ($substr as $ss) {
-            Asserter::assertOk(mb_stripos($s, $ss) === false,
+            AssertHelper::assertOk(mb_stripos($s, $ss) === false,
                 "String '${s}' should not contains substring '${ss}'");
         }
     }

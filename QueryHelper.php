@@ -20,9 +20,9 @@ class QueryHelper
         $hash = new CustomHash(20, "?'`" . '"');
         $q = implode($hash->getHash(), $qs);
         $splittedByTokens = StringHelper::tokenize($q, $quotesPattern);
-        Asserter::assertIsArrayOfStrings($splittedByTokens);
+        AssertHelper::assertIsArrayOfStrings($splittedByTokens);
         $notQuotted = array_values(ArrayHelper::filterEven($splittedByTokens));
-        Asserter::assertStringNotContainsSubstrings(
+        AssertHelper::assertStringNotContainsSubstrings(
             implode("", $notQuotted), ["'", '"', '`']);
         $quotted = array_values(ArrayHelper::filterNotEven($splittedByTokens));
         $processedNotQuotted = StringHelper::resplit(
@@ -32,7 +32,7 @@ class QueryHelper
         );
         $processedMixed = ArrayHelper::mix($processedNotQuotted, $quotted);
         $result = explode($hash->getHash(), implode("", $processedMixed));
-        Asserter::assertCountEq($qs, $result);
+        AssertHelper::assertCountEq($qs, $result);
         return $result;
     }
 
@@ -51,7 +51,7 @@ class QueryHelper
             ArrayHelper::filterEven($withConditionsExcluded));
         $conditions = array_values(
             ArrayHelper::filterNotEven($withConditionsExcluded));
-        Asserter::assertStringNotContainsSubstrings(
+        AssertHelper::assertStringNotContainsSubstrings(
             implode("", $conditionLess), ["{", '}']);
         $conditionsWithoutBrackets = array_map(
             fn($c) => implode("", array_filter(
@@ -76,7 +76,7 @@ class QueryHelper
             $hash->getHash(),
             implode("", ArrayHelper::mix($processedConditionless, $processedConds))
         );
-        Asserter::assertCountEq($qs, $result);
+        AssertHelper::assertCountEq($qs, $result);
         return $result;
     }
 
@@ -95,7 +95,7 @@ class QueryHelper
         $splitted = StringHelper::tokenize($q, $pattern);
         $valuesLess = array_values(
             ArrayHelper::filterEven($splitted));
-        Asserter::assertStringNotContainsSubstrings(
+        AssertHelper::assertStringNotContainsSubstrings(
             implode("", $valuesLess), ["?"]);
         $processed = StringHelper::resplit(
             $splitted,
@@ -106,7 +106,7 @@ class QueryHelper
             $hash->getHash(),
             implode("", $processed)
         );
-        Asserter::assertCountEq($qs, $result);
+        AssertHelper::assertCountEq($qs, $result);
         return $result;
     }
 }

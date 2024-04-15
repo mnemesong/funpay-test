@@ -14,7 +14,7 @@ class ArrayHelper
      */
     public static function mix(array $outer, array $inner): array
     {
-        Asserter::assertOk(
+        AssertHelper::assertOk(
             count($outer) === (count($inner) + 1),
             "count of outer values should be more on 1 then "
             . "count of inner values: \n" . print_r($outer, true)
@@ -38,7 +38,7 @@ class ArrayHelper
      */
     public static function zip(array $arr1, array $arr2): array
     {
-        Asserter::assertOk(
+        AssertHelper::assertOk(
             count($arr1) === (count($arr2)),
             "count of two arrays should be equals: \n"
                 . print_r($arr1, true)

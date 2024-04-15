@@ -72,7 +72,7 @@ class StringHelper
         }
         $result[] = implode("",
             array_slice($exploded, end($splitPoints)));
-        Asserter::assertIsArrayOfStrings($result);
+        AssertHelper::assertIsArrayOfStrings($result);
         return $result;
     }
 
@@ -87,7 +87,7 @@ class StringHelper
         string $delim,
         callable $process
     ): array {
-        Asserter::assertIsArrayOfStrings($strs);
+        AssertHelper::assertIsArrayOfStrings($strs);
         $splitted = array_map(
             fn($s) => explode($delim, $s),
             $strs
@@ -109,7 +109,7 @@ class StringHelper
             []
         );
         $processedParts = $process($parts);
-        Asserter::assertCountEq($parts, $processedParts);
+        AssertHelper::assertCountEq($parts, $processedParts);
         return array_reduce(
             ArrayHelper::mix($processedParts, $delimeters),
             function($acc, $el) use ($hashSkip, $hashDelim, $delim) {
