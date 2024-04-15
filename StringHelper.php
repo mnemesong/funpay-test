@@ -7,6 +7,8 @@ namespace FpDbTest;
 class StringHelper
 {
     /**
+     * Ищет в строке токены, указанные в REGEX-паттерне и дробит строку
+     * по наибольшим границам этих токенов: [неТокен, токен, неТокен, токен, ...]
      * @param string $str
      * @param string $pattern
      * @return array|string[]
@@ -77,6 +79,9 @@ class StringHelper
     }
 
     /**
+     * Переразделяет массив строк по подстроке, для преобразования результата
+     * некоей функцией :: string[]M -> string[]M, после чего пересобирает результат
+     * в массив строк той-же размерности, что был изначально.
      * @param string[] $strs - array count of N
      * @param string $delim
      * @param callable $process - process function (array count of M) -> (array count of M)

@@ -2,12 +2,16 @@
 namespace FpDbTest;
 
 /**
- * Custom hash value-object
+ * Настраиваемый хэш
  */
 class CustomHash
 {
     private string $hash = '';
 
+    /**
+     * @param int $len
+     * @param string $excludeChars
+     */
     public function __construct(int $len, string $excludeChars = "")
     {
         $excludeSplit = mb_str_split($excludeChars);
@@ -30,15 +34,6 @@ class CustomHash
     public function getHash(): string
     {
         return $this->hash;
-    }
-
-    /**
-     * @param string $v
-     * @return bool
-     */
-    public function isHash(string $v): bool
-    {
-        return $v === $this->hash;
     }
 
 }

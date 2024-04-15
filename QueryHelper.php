@@ -1,13 +1,18 @@
 <?php
 namespace FpDbTest;
 
+/**
+ * Вспомогательный класс:
+ * содержит чистые методы токенизации и преобразования частей SQL-запросов
+ */
 class QueryHelper
 {
     /**
-     * Extract quoted values and process other parts of query
-     * @param array $qs
-     * @param callable $f - function of processing query parts :: string[] -> string[]
-     * @return string[]
+     * Выделяет значения в кавычках и отдает остальную часть запроса
+     * функции преобразования
+     * @param string[] $qs - string[]M
+     * @param callable $f - function of processing query parts :: string[]N -> string()[]N
+     * @return string[] - string[]M
      */
     public static function processQuotes(
         array $qs,
@@ -37,9 +42,12 @@ class QueryHelper
     }
 
     /**
-     * @param string[] $qs
-     * @param callable $f
-     * @return string[]
+     * Разбивает части запроса по фигурным скобкам и отдает по частям
+     * функции преобразования в таком виде, что все нечетные части запроса
+     * были включены в условное выражение
+     * @param string[] $qs - string[]M
+     * @param callable $f - function of processing query parts :: string[]N -> string()[]N
+     * @return string[] - string[]M
      */
     public static function processCondition(array $qs, callable $f): array
     {
@@ -75,9 +83,11 @@ class QueryHelper
     }
 
     /**
-     * @param string[] $qs
-     * @param callable $f
-     * @return array
+     * Разбивает части запроса по токенам вставки значений и отдает на обработку
+     * функции в таком виде, что все нечетные части запроса - токены вставки значений
+     * @param string[] $qs - string[]M
+     * @param callable $f - function of processing query parts :: string[]N -> string()[]N
+     * @return string[] - string[]M
      */
     public static function processValueTokens(
         array $qs,
@@ -105,6 +115,7 @@ class QueryHelper
     }
 
     /**
+     * Считает кол-во токенов вставки значений в части запроса
      * @param string $q
      * @return int
      */

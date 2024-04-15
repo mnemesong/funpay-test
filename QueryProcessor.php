@@ -1,6 +1,9 @@
 <?php
 namespace FpDbTest;
 
+/**
+ * Компонент обработки и форматирования SQL-запроса
+ */
 class QueryProcessor
 {
     private DbFormatterInterface $dbFormatter;

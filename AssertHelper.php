@@ -7,6 +7,7 @@ namespace FpDbTest;
 final class AssertHelper
 {
     /**
+     * Проверяет, что выражение TRUEABLE
      * @param mixed $val
      * @param string $msg
      * @return void
@@ -20,6 +21,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет равенство двух скалярных или нулевых значений
      * @param scalar|null $val1
      * @param scalar|null $val2
      * @return void
@@ -37,6 +39,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет длинну массива
      * @param array $val1
      * @param int $nominalCnt
      * @return void
@@ -52,6 +55,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет, что массивы одинаковой длинны
      * @param array $val1
      * @param array $val2
      * @return void
@@ -70,6 +74,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет, что значение - скалярное или NULL
      * @param $val
      * @return void
      */
@@ -82,6 +87,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет что значение - строка
      * @param $val
      * @return void
      */
@@ -91,6 +97,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет, что массив содержит только скалярные значения или NULL
      * @param $val
      * @return void
      */
@@ -103,6 +110,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет, что массив содержит только строки
      * @param $val
      * @return void
      */
@@ -118,6 +126,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет равенство двух опционально-скалярных массивов
      * @param scalar[]|null[] $arr1
      * @param scalar[]|null[] $arr2
      * @return void
@@ -140,6 +149,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет каждый элемент массива функцией
      * @param array $array
      * @param callable $f
      * @param string $desc
@@ -161,6 +171,7 @@ final class AssertHelper
     }
 
     /**
+     * Проверяет, что строка не содержит подстроку
      * @param string $s
      * @param array $substr
      * @return void

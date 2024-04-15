@@ -3,6 +3,10 @@ namespace FpDbTest;
 
 class CustomHashTest
 {
+    /**
+     * @param array $forbiddenChars
+     * @return void
+     */
     public static function abstractTest(array $forbiddenChars)
     {
         $forbStr = implode("", $forbiddenChars);
@@ -15,12 +19,18 @@ class CustomHashTest
         }
     }
 
+    /**
+     * @return void
+     */
     public static function testConstruct()
     {
         self::abstractTest(["'", "&", "?", "1", "h"]);
         self::abstractTest(['"', "`", "g", "*", "?"]);
     }
 
+    /**
+     * @return void
+     */
     public static function runAll()
     {
         self::testConstruct();

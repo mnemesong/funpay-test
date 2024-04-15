@@ -7,7 +7,8 @@ namespace FpDbTest;
 class ArrayHelper
 {
     /**
-     * Mix values of two arrays: one over one
+     * Смешивает значения двух массивов в новый, через одно
+     * [A1, B1, A2, B2, ...]
      * @param array $outer
      * @param array $inner
      * @return array
@@ -31,7 +32,7 @@ class ArrayHelper
     }
 
     /**
-     * Zip two arrays to array of tuples
+     * Сшивает два массива в массив пар
      * @param array $arr1 - T1[]
      * @param array $arr2 - T2[]
      * @return array - [T1, T2][]
@@ -53,6 +54,7 @@ class ArrayHelper
     }
 
     /**
+     * Создает новый массив с только четными по порядку значениями исходного
      * @param array $array
      * @return array
      */
@@ -65,6 +67,7 @@ class ArrayHelper
     }
 
     /**
+     * Создает новый массив с только нечетными по порядку значениями исходного
      * @param array $array
      * @return array
      */
@@ -77,6 +80,7 @@ class ArrayHelper
     }
 
     /**
+     * Аналог функции map, но с укзаанием индекса элемента
      * @param array $array - A[]
      * @param callable $f - convertion function :: A -> int -> B
      * @return array - B[]
@@ -90,6 +94,11 @@ class ArrayHelper
         return $result;
     }
 
+    /**
+     * Возвращает все элементы массива, кроме первого
+     * @param array $arr
+     * @return array
+     */
     public static function rest(array $arr): array
     {
         $firstI = array_key_first($arr);
