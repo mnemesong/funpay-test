@@ -75,8 +75,10 @@ final class AssertHelper
      */
     public static function assertIsOptionScalar($val): void
     {
-        self::assertOk(is_scalar($val) || is_null($val),
-            "should be scalar or null");
+        if(!is_scalar($val) && !is_null($val)) {
+            $printed = print_r($val, true);
+            throw new \Error("Value ${printed} should be scalar or null");
+        }
     }
 
     /**
@@ -152,7 +154,7 @@ final class AssertHelper
             if(!$f($v)) {
                 $arrPrint = print_r($array, true);
                 $vPrint = print_r($v, true);
-                throw new \Error("Element element${vPrint} is not "
+                throw new \Error("Element element ${vPrint} is not "
                     . "${desc} in ${arrPrint}");
             }
         }

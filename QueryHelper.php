@@ -43,7 +43,7 @@ class QueryHelper
      */
     public static function processCondition(array $qs, callable $f): array
     {
-        $pattern = "/\\{(?:[^\\}\\{])*\\}/";
+        $pattern = "/\\{[^\\}\\{]*\\}/";
         $hash = new CustomHash(20, "?{}");
         $q = implode($hash->getHash(), $qs);
         $withConditionsExcluded = StringHelper::tokenize($q, $pattern);
@@ -108,5 +108,16 @@ class QueryHelper
         );
         AssertHelper::assertCountEq($qs, $result);
         return $result;
+    }
+
+    /**
+     * @param string $q
+     * @return int
+     */
+    public static function calcNumOfValueTokens(string $q): int
+    {
+        $pattern =  '/\?[dfa\#]?/';
+        $splitted = StringHelper::tokenize($q, $pattern);
+        return floor(count($splitted) / 2);
     }
 }

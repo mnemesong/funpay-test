@@ -110,7 +110,7 @@ class StringHelper
         );
         $processedParts = $process($parts);
         AssertHelper::assertCountEq($parts, $processedParts);
-        return array_reduce(
+        return array_values(array_reduce(
             ArrayHelper::mix($processedParts, $delimeters),
             function($acc, $el) use ($hashSkip, $hashDelim, $delim) {
                 if(empty($acc)) {
@@ -135,6 +135,6 @@ class StringHelper
                 );
             },
             []
-        );
+        ));
     }
 }

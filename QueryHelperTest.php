@@ -66,10 +66,31 @@ class QueryHelperTest
     /**
      * @return void
      */
+    public static function testProcessValueTokens2()
+    {
+        $givenQuery = [
+            'UPDATE users SET ?a WHERE user_id = -1'
+        ];
+        $result = QueryHelper::processValueTokens(
+            $givenQuery,
+            fn($strParts) => array_map(
+                fn($p) =>(in_array($p, ["?", "?d", "?#", "?a"])) ? "!" : $p
+                , $strParts
+            )
+        );
+        AssertHelper::assertArraysOfOptionScalarEquals($result, [
+            'UPDATE users SET ! WHERE user_id = -1'
+        ]);
+    }
+
+    /**
+     * @return void
+     */
     public static function runAll()
     {
         self::testProcessQuotes();
         self::testProcessCondition();
         self::testProcessValueTokens();
+        self::testProcessValueTokens2();
     }
 }

@@ -2,28 +2,29 @@
 
 namespace FpDbTest;
 
-use Exception;
 use mysqli;
-use FpDbTest\TokenizationResult;
 
 class Database implements DatabaseInterface
 {
     private mysqli $mysqli;
-    private CustomHash $skipHash;
+    private QueryProcessor $queryProcessor;
 
     public function __construct(mysqli $mysqli)
     {
         $this->mysqli = $mysqli;
-        $this->skipHash = new CustomHash(20);
+        $this->queryProcessor = new QueryProcessor(
+            new MysqlDbFormatter($this->mysqli)
+        );
     }
 
     public function buildQuery(string $query, array $args = []): string
     {
-        throw new Exception();
+        echo "Building query: " . $query . "\n";
+        return $this->queryProcessor->processQuery($query, $args);
     }
 
     public function skip()
     {
-        return $this->skipHash->getHash();
+        return $this->queryProcessor->getSkipVal();
     }
 }
