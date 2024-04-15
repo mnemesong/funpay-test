@@ -44,9 +44,32 @@ class QueryHelperTest
     /**
      * @return void
      */
+    public static function testProcessValueTokens()
+    {
+        $givenQuery = [
+            'SELECT ?# FROM `users` ',
+            'WHERE user_id = ?d { AND block = "dsaa" }'
+        ];
+        $result = QueryHelper::processValueTokens(
+            $givenQuery,
+            fn($strParts) => array_map(
+                fn($p) =>(in_array($p, ["?", "?d", "?#"])) ? "!" : $p
+                , $strParts
+            )
+        );
+        Asserter::assertArraysOfOptionScalarEquals($result, [
+            'SELECT ! FROM `users` ',
+            'WHERE user_id = ! { AND block = "dsaa" }'
+        ]);
+    }
+
+    /**
+     * @return void
+     */
     public static function runAll()
     {
         self::testProcessQuotes();
         self::testProcessCondition();
+        self::testProcessValueTokens();
     }
 }

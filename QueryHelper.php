@@ -3,24 +3,6 @@ namespace FpDbTest;
 
 class QueryHelper
 {
-    const VAL_TOKEN_PATTERN = '/\?[dfa\#]?/';
-
-    public static function convertQuery(string $q, array $vals): string
-    {
-//        $quotesPattern = "/" . implode("|",array_map(
-//                fn($ch) => "(${ch}(?:(?:[^${ch}])|(?:\\\\${ch}))*[^\\\\]${ch})",
-//                ['"', "'", "`"]
-//            )) . "/";
-//        $quotesTokenizResult = new TokenizationResult($q, $quotesPattern);
-//        $hash = new CustomHash(20, "?");
-//        $quotesLessQ = implode($hash->getHash(), $quotesTokenizResult->getStrParts());
-//        $condsTokenizResult = new TokenizationResult($quotesLessQ, "/[\{[^}]*\}]/");
-//        Asserter::assertOk(strpos($));
-        $result = self::processQuotes($q, function (string $s) {
-
-        });
-    }
-
     /**
      * Extract quoted values and process other parts of query
      * @param array $qs
@@ -93,6 +75,36 @@ class QueryHelper
         $result = explode(
             $hash->getHash(),
             implode("", ArrayHelper::mix($processedConditionless, $processedConds))
+        );
+        Asserter::assertCountEq($qs, $result);
+        return $result;
+    }
+
+    /**
+     * @param string[] $qs
+     * @param callable $f
+     * @return array
+     */
+    public static function processValueTokens(
+        array $qs,
+        callable $f
+    ): array {
+        $pattern =  '/\?[dfa\#]?/';
+        $hash = new CustomHash(20, "?");
+        $q = implode($hash->getHash(), $qs);
+        $splitted = StringHelper::tokenize($q, $pattern);
+        $valuesLess = array_values(
+            ArrayHelper::filterEven($splitted));
+        Asserter::assertStringNotContainsSubstrings(
+            implode("", $valuesLess), ["?"]);
+        $processed = StringHelper::resplit(
+            $splitted,
+            $hash->getHash(),
+            fn ($parts) => $f($parts)
+        );
+        $result = explode(
+            $hash->getHash(),
+            implode("", $processed)
         );
         Asserter::assertCountEq($qs, $result);
         return $result;
